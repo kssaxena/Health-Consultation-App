@@ -30,14 +30,17 @@ const InClinicOfflineCard = () => {
         Book appointment with top listed In-Clinic Doctors{" "}
       </h1>
       <Carousel responsive={responsive} className="p-5 z-10">
-        <CardForOffline DoctorType={"Physician "} />
-        <CardForOffline DoctorType={"Dentist"} />
-        <CardForOffline DoctorType={"Gynecologist"} />
-        <CardForOffline DoctorType={"Physiotherapist"} />
-        <CardForOffline DoctorType={"Orthopedist"} />
-        <CardForOffline DoctorType={"Surgeon"} />
-        <CardForOffline DoctorType={"Dietitian"} />
-        <CardForOffline DoctorType={"Pediatrician"} />
+        <CardForOffline path={"/doctors_offline"} DoctorType={"Physician "} />
+        <CardForOffline path={"/doctors_offline"} DoctorType={"Dentist"} />
+        <CardForOffline path={"/doctors_offline"} DoctorType={"Gynecologist"} />
+        <CardForOffline
+          path={"/doctors_offline"}
+          DoctorType={"Physiotherapist"}
+        />
+        <CardForOffline path={"/doctors_offline"} DoctorType={"Orthopedist"} />
+        <CardForOffline path={"/doctors_offline"} DoctorType={"Surgeon"} />
+        <CardForOffline path={"/doctors_offline"} DoctorType={"Dietitian"} />
+        <CardForOffline path={"/doctors_offline"} DoctorType={"Pediatrician"} />
       </Carousel>
     </section>
   );

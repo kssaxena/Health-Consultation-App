@@ -79,7 +79,8 @@ const Header = () => {
           >
             Login
           </button>
-          <button onClick={NavigateToRegisterPage} 
+          <button
+            onClick={NavigateToRegisterPage}
             className={`border p-2 rounded-lg bg-[#E5F8FF] border-blue-500 hover:drop-shadow-md drop-shadow-sm shadow-black hover:scale-105 duration-200 ease-in-out ${
               location.pathname === "/register" ? "bg-green-500 " : ""
             }`}

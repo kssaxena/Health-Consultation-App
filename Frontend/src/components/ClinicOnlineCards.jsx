@@ -30,32 +30,14 @@ const ClinicOnlineCards = () => {
         Book appointment for Online Consultation
       </h1>
       <Carousel responsive={responsive} className="p-5 z-10">
-        <CardForOnline
-          path={"/general_physician_online"}
-          DoctorType={"Physician "}
-        />
-        <CardForOnline path={"/dentist_online"} DoctorType={"Dentist"} />
-        <CardForOnline
-          path={"/gynecologist_online"}
-          DoctorType={"Gynecologist"}
-        />
-        <CardForOnline
-          path={"/physiotherapist_online"}
-          DoctorType={"Physiotherapist"}
-        />
-        <CardForOnline
-          path={"/orthopedist_online"}
-          DoctorType={"Orthopedist"}
-        />
-        <CardForOnline
-          path={"/general_surgeon_online"}
-          DoctorType={"Surgeon"}
-        />
-        <CardForOnline path={"/dietitian_online"} DoctorType={"Dietitian"} />
-        <CardForOnline
-          path={"/pediatrition_online"}
-          DoctorType={"Pediatrician"}
-        />
+        <CardForOnline path={"/doctors_online"} DoctorType={"Physician "} />
+        <CardForOnline path={"/doctors_online"} DoctorType={"Dentist"} />
+        <CardForOnline path={"/doctors_online"} DoctorType={"Gynecologist"} />
+        <CardForOnline path={"/doctors_online"} DoctorType={"Physiotherapist"} />
+        <CardForOnline path={"/doctors_online"} DoctorType={"Orthopedist"} />
+        <CardForOnline path={"/doctors_online"} DoctorType={"Surgeon"} />
+        <CardForOnline path={"/doctors_online"} DoctorType={"Dietitian"} />
+        <CardForOnline path={"/doctors_online"} DoctorType={"Pediatrician"} />
       </Carousel>
     </section>
   );

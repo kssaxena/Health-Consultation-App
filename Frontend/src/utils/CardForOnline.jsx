@@ -20,7 +20,10 @@ const CardForOnline = ({ DoctorType, path }) => {
   }, []);
 
   return (
-    <Link to={path} className="offline bg-[#248DAC] flex flex-col justify-center items-center w-48 h-48 rounded-lg drop-shadow-xl shadow-black m-2 hover:drop-shadow-xl hover:shadow-black duration-200 ease-in-out">
+    <Link
+      to={path}
+      className="offline bg-[#248DAC] flex flex-col justify-center items-center w-48 h-48 rounded-lg drop-shadow-xl shadow-black m-2 hover:drop-shadow-xl hover:shadow-black duration-200 ease-in-out"
+    >
       <div
         ref={CardForDoctor}
         className="w-60 h-w-60 overflow-hidden rounded-full "
