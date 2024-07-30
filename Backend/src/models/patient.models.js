@@ -1,4 +1,6 @@
+import bcrypt from "bcrypt";
 import mongoose from "mongoose";
+import Jwt from "jsonwebtoken";
 
 const userPatientSchema = new mongoose.Schema(
   {
@@ -29,7 +31,7 @@ const userPatientSchema = new mongoose.Schema(
     },
     password: {
       trim: true,
-      type: Number,
+      type: String,
       required: true,
     },
     medical_record: {
@@ -47,5 +49,39 @@ const userPatientSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+userPatientSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+userPatientSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+userPatientSchema.methods.generateAccessToken = function () {
+  return Jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    }
+  );
+};
+userPatientSchema.methods.generateRefreshToken = function () {
+  return Jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
+};
 
 export const User = mongoose.model("User", userPatientSchema);

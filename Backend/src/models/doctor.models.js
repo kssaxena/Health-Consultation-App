@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import Jwt from "jsonwebtoken";
 
 const doctorSchema = new mongoose.Schema(
   {
@@ -7,11 +9,11 @@ const doctorSchema = new mongoose.Schema(
       required: true,
       lowercase: true,
     },
-    first_name: {
+    firstName: {
       type: String,
       required: true,
     },
-    last_name: {
+    lastName: {
       type: String,
       required: true,
     },
@@ -19,7 +21,7 @@ const doctorSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    age: {
+    dob: {
       type: Number,
       required: true,
     },
@@ -43,7 +45,7 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    name_of_workplace: {
+    clinic_name: {
       type: String,
       required: true,
     },
@@ -54,5 +56,40 @@ const doctorSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+doctorSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+doctorSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+doctorSchema.methods.generateAccessToken = function () {
+  return Jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    }
+  );
+};
+
+doctorSchema.methods.generateRefreshToken = function () {
+  return Jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
+};
 
 export const DoctorUser = mongoose.model("DoctorUser", doctorSchema);

@@ -1,15 +1,86 @@
-import React from "react";
+import React, { useState } from "react";
 import { Apple, Google } from "../assets";
+import { alertOk, alertError } from "../utils/Alert";
 
 const DoctorRegistration = () => {
+  const [form, setFormDoctorUser] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    contact_number: Number,
+    dob: Date,
+    gender: "",
+    experience: Number,
+    fee: Number,
+    location: "",
+    specialization: "",
+    clinic_name: "",
+    password: "",
+  });
+
+  const HandelInputChange = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    setFormDoctorUser({ ...form, [name]: value });
+  };
+
+  function createFormData(form) {
+    const formData = new FormData();
+
+    // Add user data as key-value pairs
+    for (const [key, value] of Object.entries(form)) {
+      // Handle potential undefined values within user object
+      if (value !== undefined) {
+        console.log(key, value);
+        formData.append(key, value);
+      } else {
+        console.warn(
+          `Skipping key "${key}" in user object due to undefined value.`
+        );
+      }
+    }
+    return formData;
+  }
+
+  const Register = async () => {
+    try {
+      const formData = await createFormData(form);
+
+      const requestOption = {
+        method: "POST",
+        body: formData,
+        redirect: "follow",
+      };
+      await fetch(
+        "https://localhost:8000/api/v1/doctor/register",
+        requestOption
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          console.log("Success:", result);
+          alertOk("Registration Successful");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alertError("Failed to register");
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const DoctorForm = () => {
     return (
       <form
+        ref={form}
         className={`flex flex-col justify-center items-center p-10 rounded-lg border shadow-md`}
       >
         <label className="w-full p-2 mb-10 text-2xl ">
           Email
           <input
+            onChange={HandelInputChange}
+            value={form.email}
+            name="email"
             type="email"
             placeholder="Email"
             className="w-full text-base mt-5 p-3 rounded-md border drop-shadow-xl shadow-[#248DAC] hover:drop-shadow-2xl duration-200 ease-in-out"
@@ -19,6 +90,9 @@ const DoctorRegistration = () => {
           <label className="w-full m-1 text-2xl">
             First Name
             <input
+              value={form.firstName}
+              onChange={HandelInputChange}
+              name="firstName"
               type="name"
               placeholder="First Name"
               className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -27,6 +101,9 @@ const DoctorRegistration = () => {
           <label className="w-full m-1 text-2xl">
             Last Name
             <input
+              value={form.lastName}
+              onChange={HandelInputChange}
+              name="lastName"
               type="last_name"
               placeholder="Last Name"
               className="w-full p-3 hover:drop-shadow-2xl duration-200 ease-in-out rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -36,6 +113,9 @@ const DoctorRegistration = () => {
         <label className="w-full p-2 mb-10 text-2xl">
           Contact Number
           <input
+            name="contact_number"
+            onChange={HandelInputChange}
+            value={form.contact_number}
             type="tel"
             placeholder="Contact Number"
             className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -44,6 +124,9 @@ const DoctorRegistration = () => {
         <label className="w-full p-2 mb-10 text-2xl">
           Date of birth
           <input
+            onChange={HandelInputChange}
+            name="dob"
+            value={form.dob}
             type="date"
             placeholder="Date of birth"
             className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -53,19 +136,21 @@ const DoctorRegistration = () => {
           <div className="flex p-3  drop-shadow-xl shadow-black  hover:drop-shadow-2xl duration-200 ease-in-out border border-[#248DAC] rounded-md flex-col w-full">
             <label htmlFor="male">
               <input
+                // onChange={HandelInputChange}
                 type="radio"
                 id="male"
                 name="gender"
-                value="male"
+                value={form.gender}
                 className="m-2"
               />
               Male
             </label>
             <label htmlFor="female">
               <input
+                // onChange={HandelInputChange}
                 type="radio"
                 id="female"
-                value="female"
+                value={form.gender}
                 name="gender"
                 className="m-2"
               />
@@ -73,10 +158,11 @@ const DoctorRegistration = () => {
             </label>
             <label htmlFor="others">
               <input
+                // onChange={HandelInputChange}
                 type="radio"
                 id="others"
                 name="gender"
-                value="others"
+                value={form.gender}
                 className="m-2"
               />
               Others
@@ -87,6 +173,9 @@ const DoctorRegistration = () => {
           <label className="w-full m-1 text-2xl">
             Experience
             <input
+              onChange={HandelInputChange}
+              name="experience"
+              value={form.experience}
               type="number"
               placeholder="Experience in Years"
               className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -95,6 +184,9 @@ const DoctorRegistration = () => {
           <label className="w-full m-1 text-2xl">
             Consultation Fee Expectation
             <input
+              onChange={HandelInputChange}
+              name="fee"
+              value={form.fee}
               type="number"
               placeholder="Fee Expectations"
               className="w-full p-3 hover:drop-shadow-2xl duration-200 ease-in-out rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -105,6 +197,9 @@ const DoctorRegistration = () => {
           <label className="w-full m-1 text-2xl">
             Location
             <input
+              onChange={HandelInputChange}
+              name="location"
+              value={form.location}
               type="address"
               placeholder="Location"
               className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -113,6 +208,9 @@ const DoctorRegistration = () => {
           <label className="w-full m-1 text-2xl">
             Specialization
             <input
+              onChange={HandelInputChange}
+              name="specialization"
+              value={form.specialization}
               type="text"
               placeholder="Your field Specialization"
               className="w-full p-3 hover:drop-shadow-2xl duration-200 ease-in-out rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -122,6 +220,9 @@ const DoctorRegistration = () => {
         <label className="w-full p-2 mb-10 text-2xl">
           Clinic / Hospitals
           <input
+            onChange={HandelInputChange}
+            name="clinic_name"
+            value={form.clinic_name}
             type="text"
             placeholder="Your Clinic name or Hospitals name for patient's checkup"
             className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -130,16 +231,16 @@ const DoctorRegistration = () => {
         <label className="w-full p-2 mb-10 text-2xl ">
           Password
           <input
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            name="password"
+            value={form.password}
+            onChange={HandelInputChange}
             type="password"
             placeholder="Password"
             className="w-full text-base mt-5 p-3 rounded-md border drop-shadow-xl shadow-[#248DAC] hover:drop-shadow-2xl duration-200 ease-in-out"
           />
         </label>
         <button
-          // onClick={submit}
+          onClick={Register}
           className="bg-[#248DAC] text-white p-3 rounded-lg w-full mt-5 text-lg hover:scale-105 scale-100 duration-200 ease-in-out hover:drop-shadow-lg"
         >
           Continue

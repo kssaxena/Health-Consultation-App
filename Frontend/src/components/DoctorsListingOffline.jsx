@@ -46,7 +46,7 @@ const DoctorsListingOffline = () => {
     },
   ];
 
-  const [isVisible, SetIsVisible] = useState("account");
+  const [isVisible, SetIsVisible] = useState("");
   return (
     <div className="pt-20 bg-[#E5F8FF] ">
       <h1 className="text-xl font-semibold w-full text-center p-10">

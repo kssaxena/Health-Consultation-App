@@ -1,6 +1,5 @@
-import { ChevronDown } from "lucide-react";
+// import { ChevronDown } from "lucide-react";
 import React from "react";
-// import { doctorphoto } from "../assets";
 
 const DoctorCard = ({
   doctorphoto,
@@ -9,6 +8,7 @@ const DoctorCard = ({
   doctor_type,
   experience,
   location,
+  clinicContactNumber,
   fee,
 }) => {
   return (
@@ -17,22 +17,27 @@ const DoctorCard = ({
         <img
           src={doctorphoto}
           alt="doctor_image"
-          className="object-fill rounded-full drop-shadow-xl bg-red-400"
+          className="object-fill rounded-full drop-shadow-xl"
         />
       </div>
       <div className="w-[50%] h-full flex flex-col justify-around p-10">
         <h1 className="text-4xl font-medium font-sans">{clinic}</h1>
         <h1 className="text-2xl ">{doctor_name}</h1>
         <h1 className="text-base font-light">{doctor_type}</h1>
-        <h1 className="text-base font-light">Experience of {experience}</h1>
-        <h1 className="text-base font-light">Location {location}</h1>
+        <h1 className="text-base font-light">
+          Experience of {experience} Years
+        </h1>
+        <h1 className="text-base font-light">Location :{location}</h1>
+        <h1 className="text-base font-light">
+          Clinic Contact Number :{clinicContactNumber}
+        </h1>
         <h1 className="text-base font-bold ">Fee {fee}</h1>
       </div>
       <div className="w-[15%] h-full flex flex-col items-center justify-evenly p-10">
         <button className="h-10 w-fit p-4 py-6 flex justify-center items-center button rounded-full bg-[#248DAC] font-bold text-white tracking-widest uppercase transform hover:scale-105 transition-colors duration-300 drop-shadow-lg ">
           Offline
         </button>
-        <button className="h-10 w-fit p-4 py-6 flex justify-center items-center button rounded-full bg-[#248DAC] font-bold text-white tracking-widest uppercase transform hover:scale-105 ease-in-out transition-colors duration-300 drop-shadow-lg ">
+        <button className="h-10 w-fit p-4 py-6 flex justify-center items-center button rounded-full bg-[#248DAC] font-bold text-white tracking-widest uppercase transform hover:scale-105 transition-colors duration-300 drop-shadow-lg ">
           Online
         </button>
       </div>

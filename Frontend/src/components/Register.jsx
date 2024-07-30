@@ -1,17 +1,79 @@
-import React from "react";
+import React, { useState } from "react";
 import { Apple, Google } from "../assets";
 import { Link } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
+import { alertError, alertOk } from "../utils/Alert";
 
 const Register = () => {
+  const [form, setFormUser] = useState({
+    email: "",
+    first_name: "",
+    last_name: "",
+    age: "",
+    gender: "",
+    password: "",
+  });
+
+  const HandelInputChange = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    setFormUser({ ...form, [name]: value });
+  };
+
+  function createFormData(form) {
+    const formData = new FormData(form);
+
+    for (const [key, value] of Object.entries(form)) {
+      if (value !== undefined) {
+        console.log(key, value);
+        formData.append(key, value);
+      } else {
+        console.warn(
+          `Skipping key "${key}" in user object due to undefined value.`
+        );
+      }
+    }
+    return formData;
+  }
+
+  const userRegister = async () => {
+    try {
+      const formData = await createFormData(form);
+
+      const requestOption = {
+        method: "POST",
+        body: formData,
+        redirect: "follow",
+      };
+      await fetch(
+        "https://localhost:8000/api/v1/patient/register",
+        requestOption
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          console.log("Success:", result);
+          alertOk("Registration Successful");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alertError("Failed to register");
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const Form = () => {
     return (
       <form
+        ref={form}
         className={`flex flex-col justify-center items-center p-10 rounded-lg border shadow-md`}
       >
         <label className="w-full p-2 mb-10 text-2xl ">
           Email
           <input
+            onChange={HandelInputChange}
+            value={form.email}
+            name="email"
             type="email"
             placeholder="Email"
             className="w-full text-base mt-5 p-3 rounded-md border drop-shadow-xl shadow-[#248DAC] hover:drop-shadow-2xl duration-200 ease-in-out"
@@ -21,6 +83,9 @@ const Register = () => {
           <label className="w-full m-1 text-2xl">
             First Name
             <input
+              onChange={HandelInputChange}
+              value={form.first_name}
+              name="email"
               type="name"
               placeholder="First Name"
               className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -29,6 +94,9 @@ const Register = () => {
           <label className="w-full m-1 text-2xl">
             Last Name
             <input
+              onChange={HandelInputChange}
+              value={form.last_name}
+              name="email"
               type="last_name"
               placeholder="Last Name"
               className="w-full p-3 hover:drop-shadow-2xl duration-200 ease-in-out rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -38,6 +106,9 @@ const Register = () => {
         <label className="w-full p-2 mb-10 text-2xl">
           Date of birth
           <input
+            onChange={HandelInputChange}
+            name="age"
+            value={form.age}
             type="date"
             placeholder="Date of birth"
             className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
@@ -47,19 +118,23 @@ const Register = () => {
           <div className="flex p-3  drop-shadow-xl shadow-black  hover:drop-shadow-2xl duration-200 ease-in-out border border-[#248DAC] rounded-md flex-col w-full">
             <label htmlFor="male">
               <input
+                // name
+                onChange={HandelInputChange}
                 type="radio"
                 id="male"
                 name="gender"
-                value="male"
+                value={form.gender}
                 className="m-2"
               />
               Male
             </label>
             <label htmlFor="female">
               <input
+                // name
+                onChange={HandelInputChange}
                 type="radio"
                 id="female"
-                value="female"
+                value={form.gender}
                 name="gender"
                 className="m-2"
               />
@@ -67,10 +142,12 @@ const Register = () => {
             </label>
             <label htmlFor="others">
               <input
+                // name
+                onChange={HandelInputChange}
                 type="radio"
                 id="others"
                 name="gender"
-                value="others"
+                value={form.gender}
                 className="m-2"
               />
               Others
@@ -80,16 +157,16 @@ const Register = () => {
         <label className="w-full p-2 mb-10 text-2xl ">
           Password
           <input
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            onChange={HandelInputChange}
+            value={form.password}
+            name="password"
             type="password"
             placeholder="Password"
             className="w-full text-base mt-5 p-3 rounded-md border drop-shadow-xl shadow-[#248DAC] hover:drop-shadow-2xl duration-200 ease-in-out"
           />
         </label>
         <button
-          // onClick={submit}
+          onClick={userRegister}
           className="bg-[#248DAC] text-white p-3 rounded-lg w-full mt-5 text-lg hover:scale-105 scale-100 duration-200 ease-in-out hover:drop-shadow-lg"
         >
           Continue
@@ -101,8 +178,13 @@ const Register = () => {
   return (
     <div className="w-full flex flex-col justify-center items-center pt-28 bg-[#E5F8FF]">
       <h1 className="text-lg">
-        Are you a Doctor ? 
-        <Link to={"/register_as_doctor"} className="text-blue-600 hover:underline" >Register Here</Link>
+        Are you a Doctor ?
+        <Link
+          to={"/register_as_doctor"}
+          className="text-blue-600 hover:underline"
+        >
+          Register Here
+        </Link>
       </h1>
       <div>
         <h1 className="text-3xl m-5 drop-shadow-xl">

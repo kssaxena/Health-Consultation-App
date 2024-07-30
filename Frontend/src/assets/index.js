@@ -7,8 +7,10 @@ import LoginPhoto from "./LoginPhoto.png";
 import Google from "./Google.png";
 import Apple from "./Apple.png";
 import LocationPhoto from "./LocationPin.png";
+import UserPhoto from "./UserPhoto.png";
 
 export {
+  UserPhoto,
   LocationPhoto,
   Apple,
   Google,

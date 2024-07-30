@@ -46,7 +46,7 @@ const DoctorsListingOnline = () => {
     },
   ];
 
-  const [isVisible, SetIsVisible] = useState("account");
+  const [isVisible, SetIsVisible] = useState("");
 
   return (
     <div className="pt-20 bg-[#E5F8FF] ">
