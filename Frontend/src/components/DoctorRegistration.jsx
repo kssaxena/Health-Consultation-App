@@ -8,7 +8,7 @@ const DoctorRegistration = () => {
     firstName: "",
     lastName: "",
     contact_number: Number,
-    dob: Date,
+    dob: Number,
     gender: "",
     experience: Number,
     fee: Number,

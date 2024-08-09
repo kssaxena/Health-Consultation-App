@@ -3,54 +3,76 @@ import { User } from "../models/patient.models.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
+// const upload = multer({ dest: "uploads/" });
+
+const calculateAge = (dateOfBirth) => {
+  const birthDate = new Date(dateOfBirth);
+  const ageDifMs = Date.now() - birthDate.getTime();
+  const ageDate = new Date(ageDifMs); // milliseconds from epoch
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+};
+
 const userRegister = asyncHandler(async (req, res) => {
-  /*fetch data from frontend
-		  check for validation
-		  check if user already exist
-		  check for file upload process, cloudinary
-		  create new user obj
-		  remove password and refresh tokens from response
-		  check for user creation
-		  res.send( user )
-		  */
-  const { email, first_name, last_name, age, gender, password } = req.body;
-  console.log(req);
+  // Extract fields from request body
+  const { email, first_name, last_name, date_of_birth, gender, password } =
+    req.body;
+
+  // Check if all required fields are provided
   if (
-    [email, first_name, last_name, age, gender, password].some(
+    [email, first_name, last_name, date_of_birth, gender, password].some(
       (field) => (field?.trim() ?? "").length === 0
     )
   ) {
     throw new ApiError(400, "All fields are Required");
   }
 
-  if (!age) throw new ApiError(400, "Please enter age");
+  // Validate date_of_birth format
+  const birthDate = new Date(date_of_birth);
+  if (isNaN(birthDate.getTime())) {
+    throw new ApiError(400, "Invalid date of birth");
+  }
 
-  if (age < 10) throw new ApiError(400, "Age must be between 10");
+  // Calculate age from date of birth
+  const age = calculateAge(date_of_birth);
 
-  if (!email.includes("@")) throw new ApiError(400, "Please enter valid email");
+  // Validate age
+  if (age < 10) {
+    throw new ApiError(400, "Age must be 10 or older");
+  }
 
+  // Validate email format
+  if (!email.includes("@")) {
+    throw new ApiError(400, "Please enter a valid email");
+  }
+
+  // Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new ApiError(400, "User already exists");
   }
 
+  // Create new user
   const newUser = await User.create({
     email,
     first_name,
     last_name,
+    date_of_birth,
     age,
     gender,
     password,
   });
 
+  // Fetch the newly created user without the password field
   const checkUser = await User.findById(newUser._id).select("-password");
   if (!checkUser) {
     throw new ApiError(500, "Failed to create user");
   }
 
-  res.status(200).json(new ApiResponse(200, checkUser, "You are Registered."));
+  // Respond with success
+  return res
+    .status(200)
+    .json(new ApiResponse(200, checkUser, "You are Registered."));
 });
-
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -148,7 +170,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const user = await User.findById(decodedToken?._id);
 
     if (!user) {
-      throw new ApiError(401, "Invalid refresh token");
+      throw new ApiError(401, "Invalid Refresh token");
     }
 
     if (incomingRefreshToken !== user?.refreshToken) {
@@ -175,7 +197,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    throw new ApiError(401, error?.message || "Invalid refresh token");
+    throw new ApiError(401, error?.message || "Invalid Refresh token");
   }
 });
 

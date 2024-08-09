@@ -19,11 +19,14 @@ const userPatientSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    age: {
-      type: Number,
-      trim: true,
+    date_of_birth: {
+      type: Date,
       required: true,
     },
+    // age: {
+    //   type: Number,
+    //   required: true, // Consider removing this if you calculate age dynamically
+    // },
     gender: {
       type: String,
       required: true,

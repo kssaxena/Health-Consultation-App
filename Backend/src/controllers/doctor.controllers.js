@@ -5,6 +5,17 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 const doctorRegister = asyncHandler(async (req, res) => {
   // Code to register a doctor goes here
+
+  /*fetch data from frontend
+		  check for validation
+		  check if user already exist
+		  check for file upload process, cloudinary
+		  create new user obj
+		  remove password and refresh tokens from response
+		  check for user creation
+		  res.send( user )
+		  */
+
   const {
     email,
     firstName,
@@ -208,9 +219,21 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
+const GetAllDoctor = asyncHandler(async (req, res) => {
+  const { Online_offline, specialization } = req.params;
+  if (!specialization) throw new ApiError(403, "No specialization found");
+  const AllDoctor = await DoctorUser.find({ Online_offline, specialization });
+  if (!AllDoctor) throw new ApiError(404, "Doctor Not found");
+  res.status(200).json(new ApiResponse(200, AllDoctor, "All Doctor"));
+
+  console.log(AllDoctor)
+
+});
+
 export {
   doctorRegister,
   userDoctorLogin,
   userDoctorLogout,
   refreshAccessToken,
+  GetAllDoctor,
 };
