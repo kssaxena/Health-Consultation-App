@@ -22,7 +22,7 @@ const doctorSchema = new mongoose.Schema(
       required: true,
     },
     dob: {
-      type: Number,
+      type: Date,
       required: true,
     },
     gender: {
@@ -46,6 +46,10 @@ const doctorSchema = new mongoose.Schema(
       required: true,
     },
     clinic_name: {
+      type: String,
+      required: true,
+    },
+    consultationMode: {
       type: String,
       required: true,
     },

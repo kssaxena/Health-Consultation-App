@@ -1,83 +1,88 @@
 import React, { useState } from "react";
 import { Apple, Google } from "../assets";
 import { alertOk, alertError } from "../utils/Alert";
+import { useRef } from "react";
 
 const DoctorRegistration = () => {
-  const [form, setFormDoctorUser] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    contact_number: Number,
-    dob: Number,
-    gender: "",
-    experience: Number,
-    fee: Number,
-    location: "",
-    specialization: "",
-    clinic_name: "",
-    password: "",
-  });
+  const DoctorForm = () => {
+    const [form, setFormDoctorUser] = useState({
+      email: "",
+      firstName: "",
+      lastName: "",
+      contact_number: Number,
+      dob: Date,
+      gender: "",
+      experience: Number,
+      fee: Number,
+      location: "",
+      specialization: "",
+      clinic_name: "",
+      consultationMode: "",
+      password: "",
+    });
 
-  const HandelInputChange = (e) => {
-    e.preventDefault();
-    const { name, value } = e.target;
-    setFormDoctorUser({ ...form, [name]: value });
-  };
+    const formRef = useRef(null);
 
-  function createFormData(form) {
-    const formData = new FormData();
+    const HandelInputChange = (e) => {
+      const { name, value } = e.target;
+      setFormDoctorUser((prevForm) => ({
+        ...prevForm,
+        [name]: value,
+      }));
+    };
 
-    // Add user data as key-value pairs
-    for (const [key, value] of Object.entries(form)) {
-      // Handle potential undefined values within user object
-      if (value !== undefined) {
-        console.log(key, value);
-        formData.append(key, value);
-      } else {
-        console.warn(
-          `Skipping key "${key}" in user object due to undefined value.`
-        );
+    const createFormData = (form) => {
+      const formData = new FormData();
+
+      for (const [key, value] of Object.entries(form)) {
+        if (value !== undefined) {
+          formData.append(key, value);
+        }
       }
-    }
-    return formData;
-  }
+      return formData;
+    };
 
-  const Register = async () => {
-    try {
-      const formData = await createFormData(form);
+    const Register = async (e) => {
+      e.preventDefault();
 
-      const requestOption = {
+      const isMultipart = false; // Set to true if you have file inputs or other multipart needs
+
+      const requestOptions = {
         method: "POST",
-        body: formData,
-        redirect: "follow",
+        headers: isMultipart ? {} : { "Content-Type": "application/json" },
+        body: isMultipart ? createFormData(form) : JSON.stringify(form),
       };
-      await fetch(
-        "https://localhost:8000/api/v1/doctor/register",
-        requestOption
-      )
-        .then((response) => response.json())
-        .then((result) => {
+
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/v1/doctor/register",
+          requestOptions
+        );
+
+        const result = await response.json();
+
+        if (response.ok) {
           console.log("Success:", result);
           alertOk("Registration Successful");
-        })
-        .catch((error) => {
-          console.error("Error:", error);
+        } else {
+          console.error("Error:", result);
           alertError("Failed to register");
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const DoctorForm = () => {
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alertError("Failed to register");
+      }
+    };
     return (
       <form
-        ref={form}
+        onSubmit={Register}
+        ref={formRef}
         className={`flex flex-col justify-center items-center p-10 rounded-lg border shadow-md`}
       >
         <label className="w-full p-2 mb-10 text-2xl ">
           Email
           <input
+            required={true}
             onChange={HandelInputChange}
             value={form.email}
             name="email"
@@ -90,6 +95,7 @@ const DoctorRegistration = () => {
           <label className="w-full m-1 text-2xl">
             First Name
             <input
+              required={true}
               value={form.firstName}
               onChange={HandelInputChange}
               name="firstName"
@@ -101,6 +107,7 @@ const DoctorRegistration = () => {
           <label className="w-full m-1 text-2xl">
             Last Name
             <input
+              required={true}
               value={form.lastName}
               onChange={HandelInputChange}
               name="lastName"
@@ -113,10 +120,11 @@ const DoctorRegistration = () => {
         <label className="w-full p-2 mb-10 text-2xl">
           Contact Number
           <input
+            required={true}
             name="contact_number"
             onChange={HandelInputChange}
             value={form.contact_number}
-            type="tel"
+            type="number"
             placeholder="Contact Number"
             className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
           />
@@ -124,6 +132,7 @@ const DoctorRegistration = () => {
         <label className="w-full p-2 mb-10 text-2xl">
           Date of birth
           <input
+            required={true}
             onChange={HandelInputChange}
             name="dob"
             value={form.dob}
@@ -136,21 +145,23 @@ const DoctorRegistration = () => {
           <div className="flex p-3  drop-shadow-xl shadow-black  hover:drop-shadow-2xl duration-200 ease-in-out border border-[#248DAC] rounded-md flex-col w-full">
             <label htmlFor="male">
               <input
-                // onChange={HandelInputChange}
+                required={true}
+                onChange={HandelInputChange}
                 type="radio"
                 id="male"
                 name="gender"
-                value={form.gender}
+                value="male"
                 className="m-2"
               />
               Male
             </label>
             <label htmlFor="female">
               <input
-                // onChange={HandelInputChange}
+                required={true}
+                onChange={HandelInputChange}
                 type="radio"
                 id="female"
-                value={form.gender}
+                value="female"
                 name="gender"
                 className="m-2"
               />
@@ -158,11 +169,12 @@ const DoctorRegistration = () => {
             </label>
             <label htmlFor="others">
               <input
-                // onChange={HandelInputChange}
+                required={true}
+                onChange={HandelInputChange}
                 type="radio"
                 id="others"
                 name="gender"
-                value={form.gender}
+                value="others"
                 className="m-2"
               />
               Others
@@ -173,6 +185,7 @@ const DoctorRegistration = () => {
           <label className="w-full m-1 text-2xl">
             Experience
             <input
+              required={true}
               onChange={HandelInputChange}
               name="experience"
               value={form.experience}
@@ -184,6 +197,7 @@ const DoctorRegistration = () => {
           <label className="w-full m-1 text-2xl">
             Consultation Fee Expectation
             <input
+              required={true}
               onChange={HandelInputChange}
               name="fee"
               value={form.fee}
@@ -197,6 +211,7 @@ const DoctorRegistration = () => {
           <label className="w-full m-1 text-2xl">
             Location
             <input
+              required={true}
               onChange={HandelInputChange}
               name="location"
               value={form.location}
@@ -207,19 +222,28 @@ const DoctorRegistration = () => {
           </label>
           <label className="w-full m-1 text-2xl">
             Specialization
-            <input
-              onChange={HandelInputChange}
+            <select
+              required={true}
               name="specialization"
+              onChange={HandelInputChange}
               value={form.specialization}
-              type="text"
-              placeholder="Your field Specialization"
-              className="w-full p-3 hover:drop-shadow-2xl duration-200 ease-in-out rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
-            />
+              className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
+            >
+              <option value={"Physician"}>Physician</option>
+              <option value={"Dentist"}>Dentist</option>
+              <option value={"Gynecologist"}>Gynecologist</option>
+              <option value={"Physiotherapist"}>Physiotherapist</option>
+              <option value={"Orthopedist"}>Orthopedist</option>
+              <option value={"Surgeon"}>Surgeon</option>
+              <option value={"Dietitian"}>Dietitian</option>
+              <option value={"Pediatrician"}>Pediatrician</option>
+            </select>
           </label>
         </section>
         <label className="w-full p-2 mb-10 text-2xl">
           Clinic / Hospitals
           <input
+            required={true}
             onChange={HandelInputChange}
             name="clinic_name"
             value={form.clinic_name}
@@ -228,9 +252,27 @@ const DoctorRegistration = () => {
             className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
           />
         </label>
+        <label className="w-full p-2 mb-10 text-2xl">
+          Consultation Mode
+          <select
+            required={true}
+            name="consultationMode"
+            onChange={HandelInputChange}
+            value={form.consultationMode}
+            className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
+          >
+            <option value={"Online"} name="Online">
+              Online (Only)
+            </option>
+            <option value={"Online&Offline"} name="Online&Offline">
+              Online and Offline (Both)
+            </option>
+          </select>
+        </label>
         <label className="w-full p-2 mb-10 text-2xl ">
           Password
           <input
+            required={true}
             name="password"
             value={form.password}
             onChange={HandelInputChange}
@@ -240,7 +282,7 @@ const DoctorRegistration = () => {
           />
         </label>
         <button
-          onClick={Register}
+          type="submit"
           className="bg-[#248DAC] text-white p-3 rounded-lg w-full mt-5 text-lg hover:scale-105 scale-100 duration-200 ease-in-out hover:drop-shadow-lg"
         >
           Continue

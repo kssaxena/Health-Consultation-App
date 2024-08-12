@@ -26,7 +26,6 @@ const Register = () => {
   const userRegister = async (e) => {
     e.preventDefault();
 
-    // Check if the form includes files or any specific condition to use FormData
     const isMultipart = false; // Set to true if you have file inputs or other multipart needs
 
     const requestOptions = {
@@ -40,6 +39,7 @@ const Register = () => {
         "http://localhost:8000/api/v1/patient/register",
         requestOptions
       );
+
       const result = await response.json();
 
       if (response.ok) {
@@ -50,9 +50,12 @@ const Register = () => {
         alertError("Failed to register");
       }
     } catch (error) {
-      console.log("Error:", error);
-      alertError("An unexpected error occurred");
+      console.error("Error:", error);
+      alertError("Failed to register");
     }
+
+    
+
   };
 
   const createFormData = (form) => {
@@ -82,7 +85,7 @@ const Register = () => {
           Create your account here
         </h1>
         <form
-          ref={formRef} // Attach the ref to the form
+          ref={formRef}
           className="flex flex-col justify-center items-center p-10 rounded-lg border shadow-md"
           onSubmit={userRegister}
         >
@@ -181,7 +184,7 @@ const Register = () => {
             />
           </label>
           <button
-            type="submit" // Change to submit to trigger form submission
+            type="submit"
             className="bg-[#248DAC] text-white p-3 rounded-lg w-full mt-5 text-lg hover:scale-105 scale-100 duration-200 ease-in-out hover:drop-shadow-lg"
           >
             Continue

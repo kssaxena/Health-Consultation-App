@@ -3,6 +3,13 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
+const calculateAge = (dateOfBirth) => {
+  const birthDate = new Date(dateOfBirth);
+  const ageDifMs = Date.now() - birthDate.getTime();
+  const ageDate = new Date(ageDifMs); // milliseconds from epoch
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+};
+
 const doctorRegister = asyncHandler(async (req, res) => {
   // Code to register a doctor goes here
 
@@ -28,6 +35,7 @@ const doctorRegister = asyncHandler(async (req, res) => {
     location,
     specialization,
     clinic_name,
+    consultationMode,
     password,
   } = req.body;
 
@@ -44,17 +52,33 @@ const doctorRegister = asyncHandler(async (req, res) => {
       location,
       specialization,
       clinic_name,
+      consultationMode,
       password,
     ].some((field) => (field?.trim() ?? "").length === 0)
   ) {
     throw new ApiError(400, "All fields are Required");
   }
 
-  if (dob < 25) throw new ApiError(400, "Age must be between 25");
+  // Validate date_of_birth format
+  const birthDate = new Date(dob);
+  if (isNaN(birthDate.getTime())) {
+    throw new ApiError(400, "Invalid date of birth");
+  }
+
+  // Calculate age from date of birth
+  const age = calculateAge(dob);
+
+  if (age < 25) throw new ApiError(400, "Age must be between 25");
 
   if (!email.includes("@")) throw new ApiError(400, "Please enter valid email");
 
   if (!email) throw new ApiError(400, "Please enter valid email");
+
+  if (!contact_number)
+    throw new ApiError(400, "Please enter valid Contact Number");
+
+  if (!contact_number.length > 10)
+    throw new ApiError(400, "Please enter a valid Contact Number");
 
   if (!password) throw new ApiError(400, "Please enter Password");
 
@@ -76,6 +100,7 @@ const doctorRegister = asyncHandler(async (req, res) => {
     location,
     specialization,
     clinic_name,
+    consultationMode,
     password,
   });
 
@@ -86,7 +111,7 @@ const doctorRegister = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Failed to create user");
   }
 
-  res
+  return res
     .status(200)
     .json(new ApiResponse(200, checkDoctorUser, "You are Registered."));
 });
@@ -226,8 +251,7 @@ const GetAllDoctor = asyncHandler(async (req, res) => {
   if (!AllDoctor) throw new ApiError(404, "Doctor Not found");
   res.status(200).json(new ApiResponse(200, AllDoctor, "All Doctor"));
 
-  console.log(AllDoctor)
-
+  console.log(AllDoctor);
 });
 
 export {

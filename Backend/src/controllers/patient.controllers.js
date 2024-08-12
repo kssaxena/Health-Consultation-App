@@ -73,6 +73,8 @@ const userRegister = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, checkUser, "You are Registered."));
 });
+
+
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
