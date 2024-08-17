@@ -8,6 +8,7 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
       lowercase: true,
+      unique: true,
     },
     firstName: {
       type: String,

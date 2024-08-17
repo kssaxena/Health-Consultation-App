@@ -15,7 +15,7 @@ import DoctorProfile from "./components/DoctorProfile";
 function App() {
   return (
     <>
-      <Header />
+      <Header /> 
       <Routes>
         <Route path="/" element={<Hero />} />
 

@@ -137,8 +137,13 @@ const generateAccessAndRefreshTokens = async (userId) => {
 const userDoctorLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  if (!(email || !password)) {
-    throw new ApiError(400, "Please provide email and password");
+  // console.log(req.body);
+
+  if (!email) {
+    throw new ApiError(400, "Please provide email ");
+  }
+  if (!password) {
+    throw new ApiError(400, "Please provide Password ");
   }
 
   const user = await DoctorUser.findOne({ email });
@@ -147,7 +152,7 @@ const userDoctorLogin = asyncHandler(async (req, res) => {
 
   const isPasswordValid = await user.isPasswordCorrect(password);
 
-  if (!isPasswordValid) throw new ApiError(401, "Invalid user credentials");
+  if (!isPasswordValid) throw new ApiError(401, "Invalid user Password");
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
     user?._id
@@ -245,9 +250,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 const GetAllDoctor = asyncHandler(async (req, res) => {
-  const { Online_offline, specialization } = req.params;
+  const { specialization, consultationMode } = req.params;
   if (!specialization) throw new ApiError(403, "No specialization found");
-  const AllDoctor = await DoctorUser.find({ Online_offline, specialization });
+  const AllDoctor = await DoctorUser.find({ consultationMode });
   if (!AllDoctor) throw new ApiError(404, "Doctor Not found");
   res.status(200).json(new ApiResponse(200, AllDoctor, "All Doctor"));
 

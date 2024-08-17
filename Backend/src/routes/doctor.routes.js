@@ -4,7 +4,7 @@ import { doctorRegister, refreshAccessToken, userDoctorLogin, userDoctorLogout }
 const router = express.Router();
 
 router.route("/register").post(doctorRegister);
-router.route("/login").get(userDoctorLogin);
+router.route("/login").post(userDoctorLogin);
 // router.route("/logout").post(userDoctorLogout);
 // router.route("/refresh-token").post(refreshAccessToken);
 

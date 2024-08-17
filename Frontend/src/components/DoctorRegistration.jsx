@@ -229,6 +229,7 @@ const DoctorRegistration = () => {
               value={form.specialization}
               className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
             >
+              <option value={"Select"}>Select</option>
               <option value={"Physician"}>Physician</option>
               <option value={"Dentist"}>Dentist</option>
               <option value={"Gynecologist"}>Gynecologist</option>
@@ -261,6 +262,9 @@ const DoctorRegistration = () => {
             value={form.consultationMode}
             className="hover:drop-shadow-2xl duration-200 ease-in-out w-full p-3 rounded-md drop-shadow-xl shadow-[#248DAC] border mt-5 text-base"
           >
+            <option value={"Select"} name="Select">
+              Select
+            </option>
             <option value={"Online"} name="Online">
               Online (Only)
             </option>
