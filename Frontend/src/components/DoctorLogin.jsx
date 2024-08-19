@@ -4,9 +4,17 @@ import { LoginPhoto } from "../assets";
 import { useState } from "react";
 import { useRef } from "react";
 import axios from "axios";
-import { alertInfo } from "../utils/Alert";
+import { alertError, alertInfo } from "../utils/Alert";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addUser, removeUser } from "../utils/userSlice";
 
 const DoctorLoginPage = () => {
+  const Navigate = useNavigate();
+
+  const navigate = () => {
+    Navigate("/");
+  };
   const [user, setDoctorUser] = useState({
     email: "",
     password: "",
@@ -35,6 +43,8 @@ const DoctorLoginPage = () => {
   //   return formData;
   // };
 
+  const Dispatch = useDispatch();
+
   const DoctorLogin = async (e) => {
     e.preventDefault();
     console.log(user);
@@ -48,8 +58,22 @@ const DoctorLoginPage = () => {
           "Content-Type": "application/json",
         },
       });
+      if (!response.ok) {
+        alertError("Login failed");
+        throw new Error(400, "Login Failed");
+      }
 
-      alertInfo(response.data.message);
+      // Storing the tokens into browser's local storage
+      localStorage.setItem("AccessToken", result.data.AccessToken);
+      localStorage.setItem("RefreshToken", result.data.RefreshToken);
+
+      // Storing data inside redux store
+      Dispatch(removeUser());
+      Dispatch(addUser(result.data.User));
+
+      // console.log(result);
+      alertInfo(result.message);
+      navigate("/");
     } catch (error) {
       console.error(error);
       alertError(error.message);

@@ -10,7 +10,7 @@ const userSlice = createSlice({
       state.userDetails.push(action.payload);
     },
     removeUser: (state) => {
-      state.userDetails.pop();
+      state.userDetails=[];
     },
   },
 });

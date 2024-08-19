@@ -2,8 +2,16 @@ import React, { useState } from "react";
 import { Apple, Google } from "../assets";
 import { alertOk, alertError } from "../utils/Alert";
 import { useRef } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addUser, removeUser } from "../utils/userSlice";
 
 const DoctorRegistration = () => {
+  const navigate = useNavigate();
+  const Navigate = () => {
+    navigate("/");
+  };
+
   const DoctorForm = () => {
     const [form, setFormDoctorUser] = useState({
       email: "",
@@ -42,6 +50,8 @@ const DoctorRegistration = () => {
       return formData;
     };
 
+    const Dispatch = useDispatch();
+
     const Register = async (e) => {
       e.preventDefault();
 
@@ -68,6 +78,18 @@ const DoctorRegistration = () => {
           console.error("Error:", result);
           alertError("Failed to register");
         }
+
+        // Storing the tokens into browser's local storage
+        localStorage.setItem("AccessToken", result.data.AccessToken);
+        localStorage.setItem("RefreshToken", result.data.RefreshToken);
+
+        // Storing data inside redux store
+        Dispatch(removeUser());
+        Dispatch(addUser(result.data.User));
+
+        // console.log(result);
+        alertInfo(result.message);
+        Navigate("/");
       } catch (error) {
         console.error("Error:", error);
         alertError("Failed to register");

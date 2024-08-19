@@ -1,9 +1,31 @@
 import React from "react";
 import { doctorphoto } from "../assets";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 const DoctorProfile = () => {
+  const dispatch = useDispatch();
+  const DoctorDetails = useSelector((store) => store.user.DoctorUser);
+
+  // useEffect(() => {
+  //   dispatch(DoctorDetails());
+  // }, [dispatch]);
+
+  // const InputDataArray = [
+  //   { id: "0", text: DoctorDetails.email },
+  //   { id: "1", text: `${DoctorDetails.firstName} ${DoctorDetails.lastName}` },
+  //   { id: "2", text: DoctorDetails.contact_number },
+  //   { id: "3", text: DoctorDetails.dob },
+  //   { id: "4", text: DoctorDetails.gender },
+  //   { id: "5", text: DoctorDetails.experience },
+  //   { id: "6", text: DoctorDetails.fee },
+  //   { id: "7", text: DoctorDetails.location },
+  //   { id: "8", text: DoctorDetails.specialization },
+  //   { id: "9", text: DoctorDetails.clinic_name },
+  // ];
+
   const InputDataArray = [
-    { id: "0", text: "Email" },
+    { id: "0", text: "email" },
     { id: "1", text: "Name" },
     { id: "2", text: "Contact_Number" },
     { id: "3", text: "DOB" },
@@ -17,7 +39,7 @@ const DoctorProfile = () => {
 
   const InputData = () => {
     return (
-      <div className="w-full">
+      <div className="w-full h-full">
         {InputDataArray.map((data) => {
           return (
             <div key={data.id}>

@@ -3,6 +3,24 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
+const generateAccessAndRefreshTokens = async (userId) => {
+  try {
+    const user = await DoctorUser.findById(userId);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(
+      500,
+      "Something went wrong while generating refresh and access token"
+    );
+  }
+};
+
 const calculateAge = (dateOfBirth) => {
   const birthDate = new Date(dateOfBirth);
   const ageDifMs = Date.now() - birthDate.getTime();
@@ -111,28 +129,22 @@ const doctorRegister = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Failed to create user");
   }
 
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    checkDoctorUser?._id
+  );
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+
   return res
     .status(200)
+    .cookie("RefreshToken", refreshToken, options)
+    .cookie("AccessToken", accessToken, options)
     .json(new ApiResponse(200, checkDoctorUser, "You are Registered."));
 });
-
-const generateAccessAndRefreshTokens = async (userId) => {
-  try {
-    const user = await DoctorUser.findById(userId);
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
-
-    user.refreshToken = refreshToken;
-    await user.save({ validateBeforeSave: false });
-
-    return { accessToken, refreshToken };
-  } catch (error) {
-    throw new ApiError(
-      500,
-      "Something went wrong while generating refresh and access token"
-    );
-  }
-};
 
 const userDoctorLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;

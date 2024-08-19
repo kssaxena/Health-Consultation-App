@@ -12,7 +12,8 @@ import { useSelector } from "react-redux";
 // import { useRef } from "react";
 
 const Header = () => {
-  const UserLogOutButton = useSelector((store) => store.user.userDetails);
+  const UserDetails = useSelector((store) => store.user.userDetails);
+  // console.log(UserDetails)
 
   const navigate = useNavigate();
 
@@ -76,11 +77,11 @@ const Header = () => {
             <X className="text-white" />
           </button>
           <div className="rounded-xl lg:w-1/2 w-[90%]  h-3/4">
-            {UserLogOutButton.length === 1 ? (
-              <section className={`w-[15%] justify-evenly items-center flex `}>
+            {UserDetails.length === 1 ? (
+              <section className={`w-[15%] justify-evenly items-center flex bg-red-400 `}>
                 <button
                   onClick={NavigateToLoginPage}
-                  className={`border p-2 rounded-lg bg-[#E5F8FF] border-blue-500 hover:drop-shadow-md drop-shadow-sm shadow-black hover:scale-105 duration-200 ease-in-out flex justify-center items-center`}
+                  className={`border p-2 rounded-lg bg-[#E5F8FF] border-blue-500 w-full hover:drop-shadow-md drop-shadow-sm shadow-black hover:scale-105 duration-200 ease-in-out flex justify-center items-center`}
                 >
                   <h1 className="text-xs text-black">
                     <LogOut />
@@ -147,7 +148,7 @@ const Header = () => {
         </section>
 
         <div className="hidden lg:block w-[15%]">
-          {UserLogOutButton.length === 1 ? (
+          {UserDetails.length === 1 ? (
             <section className={`w-[15%] justify-evenly items-center flex `}>
               <button
                 onClick={NavigateToLoginPage}
