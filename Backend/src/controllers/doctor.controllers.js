@@ -3,6 +3,7 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
+// Utility function to generate access and refresh tokens
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await DoctorUser.findById(userId);
@@ -21,6 +22,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
   }
 };
 
+// Utility function to calculate age from date of birth
 const calculateAge = (dateOfBirth) => {
   const birthDate = new Date(dateOfBirth);
   const ageDifMs = Date.now() - birthDate.getTime();
@@ -28,19 +30,8 @@ const calculateAge = (dateOfBirth) => {
   return Math.abs(ageDate.getUTCFullYear() - 1970);
 };
 
+// Handler for doctor registration
 const doctorRegister = asyncHandler(async (req, res) => {
-  // Code to register a doctor goes here
-
-  /*fetch data from frontend
-		  check for validation
-		  check if user already exist
-		  check for file upload process, cloudinary
-		  create new user obj
-		  remove password and refresh tokens from response
-		  check for user creation
-		  res.send( user )
-		  */
-
   const {
     email,
     firstName,
@@ -85,17 +76,12 @@ const doctorRegister = asyncHandler(async (req, res) => {
 
   // Calculate age from date of birth
   const age = calculateAge(dob);
-
   if (age < 25) throw new ApiError(400, "Age must be between 25");
 
-  if (!email.includes("@")) throw new ApiError(400, "Please enter valid email");
+  if (!email.includes("@"))
+    throw new ApiError(400, "Please enter a valid email");
 
-  if (!email) throw new ApiError(400, "Please enter valid email");
-
-  if (!contact_number)
-    throw new ApiError(400, "Please enter valid Contact Number");
-
-  if (!contact_number.length > 10)
+  if (!contact_number || contact_number.length <= 10)
     throw new ApiError(400, "Please enter a valid Contact Number");
 
   if (!password) throw new ApiError(400, "Please enter Password");
@@ -123,21 +109,20 @@ const doctorRegister = asyncHandler(async (req, res) => {
   });
 
   const checkDoctorUser = await DoctorUser.findById(newDoctorUser._id).select(
-    "-password "
+    "-password"
   );
   if (!checkDoctorUser) {
     throw new ApiError(500, "Failed to create user");
   }
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-    checkDoctorUser?._id
+    checkDoctorUser._id
   );
 
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
-
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
 
   return res
     .status(200)
@@ -146,28 +131,22 @@ const doctorRegister = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, checkDoctorUser, "You are Registered."));
 });
 
+// Handler for doctor login
 const userDoctorLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // console.log(req.body);
-
-  if (!email) {
-    throw new ApiError(400, "Please provide email ");
-  }
-  if (!password) {
-    throw new ApiError(400, "Please provide Password ");
-  }
+  if (!email) throw new ApiError(400, "Please provide email");
+  if (!password) throw new ApiError(400, "Please provide Password");
 
   const user = await DoctorUser.findOne({ email });
 
   if (!user) throw new ApiError(404, "User not found");
 
   const isPasswordValid = await user.isPasswordCorrect(password);
-
   if (!isPasswordValid) throw new ApiError(401, "Invalid user Password");
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-    user?._id
+    user._id
   );
 
   const loggedInUser = await DoctorUser.findById(user._id).select(
@@ -196,6 +175,7 @@ const userDoctorLogin = asyncHandler(async (req, res) => {
     );
 });
 
+// Handler for doctor logout
 const userDoctorLogout = asyncHandler(async (req, res) => {
   await DoctorUser.findByIdAndUpdate(req.user._id, {
     new: true,
@@ -213,12 +193,13 @@ const userDoctorLogout = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User logged Out"));
 });
 
+// Handler for refreshing access token
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
 
   if (!incomingRefreshToken) {
-    throw new ApiError(401, "unauthorized request");
+    throw new ApiError(401, "Unauthorized request");
   }
 
   try {
@@ -227,23 +208,23 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET
     );
 
-    const user = await DoctorUser.findById(decodedToken?._id);
+    const user = await DoctorUser.findById(decodedToken._id);
 
     if (!user) {
       throw new ApiError(401, "Invalid refresh token");
     }
 
-    if (incomingRefreshToken !== user?.refreshToken) {
+    if (incomingRefreshToken !== user.refreshToken) {
       throw new ApiError(401, "Refresh token is expired or used");
     }
+
+    const { accessToken, newRefreshToken } =
+      await generateAccessAndRefreshTokens(user._id);
 
     const options = {
       httpOnly: true,
       secure: true,
     };
-
-    const { accessToken, newRefreshToken } =
-      await generateAccessAndRefreshTokens(user._id);
 
     return res
       .status(200)
@@ -257,19 +238,75 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    throw new ApiError(401, error?.message || "Invalid refresh token");
+    throw new ApiError(401, error.message || "Invalid refresh token");
   }
 });
 
+// Handler for getting all doctors based on specialization and consultation mode
 const GetAllDoctor = asyncHandler(async (req, res) => {
   const { specialization, consultationMode } = req.params;
   if (!specialization) throw new ApiError(403, "No specialization found");
+
   const AllDoctor = await DoctorUser.find({ consultationMode });
   if (!AllDoctor) throw new ApiError(404, "Doctor Not found");
-  res.status(200).json(new ApiResponse(200, AllDoctor, "All Doctor"));
 
+  res.status(200).json(new ApiResponse(200, AllDoctor, "All Doctor"));
   console.log(AllDoctor);
 });
+
+// Handler for getting detailed doctor information
+const getDoctorDetails = asyncHandler(async (req, res) => {
+  const { specialization, consultationMode } = req.params;
+  // const { consultationMode } = req.params;
+
+  const doctors = await DoctorUser.find({ specialization ,consultationMode }); // Fetch all doctors
+  // const doctorDetails = doctors.map((doctor) => collectDoctorData(doctor));
+  res.status(200).json(new ApiResponse(200, doctors, "Doctor Details"));
+});
+
+// Utility function to collect doctor data
+function collectDoctorData(doctor) {
+  const {
+    _id,
+    email,
+    firstName,
+    lastName,
+    contact_number,
+    dob,
+    gender,
+    experience,
+    fee,
+    location,
+    specialization,
+    clinic_name,
+    consultationMode,
+    createdAt,
+    updatedAt,
+  } = doctor;
+
+  const accessToken = doctor.generateAccessToken();
+  const refreshToken = doctor.generateRefreshToken();
+
+  return {
+    _id,
+    email,
+    firstName,
+    lastName,
+    contact_number,
+    dob,
+    gender,
+    experience,
+    fee,
+    location,
+    specialization,
+    clinic_name,
+    consultationMode,
+    accessToken,
+    refreshToken,
+    createdAt,
+    updatedAt,
+  };
+}
 
 export {
   doctorRegister,
@@ -277,4 +314,6 @@ export {
   userDoctorLogout,
   refreshAccessToken,
   GetAllDoctor,
+  collectDoctorData,
+  getDoctorDetails,
 };

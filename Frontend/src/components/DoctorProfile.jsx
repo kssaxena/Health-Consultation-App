@@ -1,41 +1,38 @@
 import React from "react";
 import { doctorphoto } from "../assets";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+// import { collectDoctorData } from "../../../Backend/src/controllers/doctor.controllers";
 
 const DoctorProfile = () => {
-  const dispatch = useDispatch();
-  const DoctorDetails = useSelector((store) => store.user.DoctorUser);
-
-  // useEffect(() => {
-  //   dispatch(DoctorDetails());
-  // }, [dispatch]);
-
-  // const InputDataArray = [
-  //   { id: "0", text: DoctorDetails.email },
-  //   { id: "1", text: `${DoctorDetails.firstName} ${DoctorDetails.lastName}` },
-  //   { id: "2", text: DoctorDetails.contact_number },
-  //   { id: "3", text: DoctorDetails.dob },
-  //   { id: "4", text: DoctorDetails.gender },
-  //   { id: "5", text: DoctorDetails.experience },
-  //   { id: "6", text: DoctorDetails.fee },
-  //   { id: "7", text: DoctorDetails.location },
-  //   { id: "8", text: DoctorDetails.specialization },
-  //   { id: "9", text: DoctorDetails.clinic_name },
-  // ];
+  const DoctorDetails = useSelector((store) => store.user.userDetails);
+  // const DoctorDetails = collectDoctorData(Doctor);
 
   const InputDataArray = [
-    { id: "0", text: "email" },
-    { id: "1", text: "Name" },
-    { id: "2", text: "Contact_Number" },
-    { id: "3", text: "DOB" },
-    { id: "4", text: "Gender" },
-    { id: "5", text: "Experience" },
-    { id: "6", text: "Fee" },
-    { id: "7", text: "Address" },
-    { id: "8", text: "Specialization" },
-    { id: "9", text: "Clinic_name" },
+    { id: "0", text: DoctorDetails.email },
+    { id: "1", text: `${DoctorDetails.firstName} ${DoctorDetails.lastName}` },
+    { id: "2", text: DoctorDetails.contact_number },
+    { id: "3", text: DoctorDetails.dob },
+    { id: "4", text: DoctorDetails.gender },
+    { id: "5", text: DoctorDetails.experience },
+    { id: "6", text: DoctorDetails.fee },
+    { id: "7", text: DoctorDetails.location },
+    { id: "8", text: DoctorDetails.specialization },
+    { id: "9", text: DoctorDetails.clinic_name },
   ];
+
+  // const InputDataArray = [
+  //   { id: "0", text: "email" },
+  //   { id: "1", text: "Name" },
+  //   { id: "2", text: "Contact_Number" },
+  //   { id: "3", text: "DOB" },
+  //   { id: "4", text: "Gender" },
+  //   { id: "5", text: "Experience" },
+  //   { id: "6", text: "Fee" },
+  //   { id: "7", text: "Address" },
+  //   { id: "8", text: "Specialization" },
+  //   { id: "9", text: "Clinic_name" },
+  // ];
 
   const InputData = () => {
     return (
@@ -53,7 +50,7 @@ const DoctorProfile = () => {
     );
   };
 
-  return (
+  return DoctorDetails.length === 1 ? (
     <div className="pt-20 bg-[#E5F8FF]">
       <section className="flex justify-evenly items-center p-5 shadow-lg ">
         <h1 className="text-5xl font-bold">My Profile..</h1>
@@ -89,6 +86,8 @@ const DoctorProfile = () => {
         </div>
       </section>
     </div>
+  ) : (
+    <div className="pt-20 bg-[#E5F8FF]">Kindly register</div>
   );
 };
 

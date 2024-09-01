@@ -5,6 +5,7 @@ import { alertError, alertOk } from "../utils/Alert";
 import { useDispatch } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { addUser, removeUser } from "../utils/userSlice";
+import { alertInfo } from "../utils/Alert";
 
 const Register = () => {
   const navigate = () => {

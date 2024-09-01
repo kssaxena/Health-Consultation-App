@@ -48,6 +48,29 @@ const DoctorsListingOnline = () => {
 
   const [isVisible, SetIsVisible] = useState("");
 
+  async function FetchDoctor(specialization) {
+    const url = `http://localhost:8000/api/v1/doctor/doctor-details/${specialization}`;
+
+    try {
+      const response = await axios.get(url);
+      // Axios automatically parses the response, so no need to call .json()
+      console.log(response.data.data[0]);
+
+      const doctorData = response.data.data; // doctorData is an array of all doctors details
+
+      console.log(doctorData);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      return [];
+    }
+  }
+
+  //  useEffect(async () => {
+  //    // Fetch data from the backend
+
+  //    await FetchDoctor();
+  //  }, []);
+
   return (
     <div className="pt-20 bg-[#E5F8FF] ">
       <h1 className="text-xl font-semibold w-full text-center p-10">
@@ -72,7 +95,10 @@ const DoctorsListingOnline = () => {
                 ) : (
                   <button
                     className="flex w-32 justify-between items-center border p-2 rounded-lg bg-[#E5F8FF] border-blue-500 hover:drop-shadow-md drop-shadow-sm shadow-black hover:scale-105 duration-200 ease-in-out hover:bg-[#22C55E]"
-                    onClick={() => SetIsVisible(type.specialization)}
+                    onClick={() => {
+                      SetIsVisible(type.specialization);
+                      FetchDoctor(type.specialization);
+                    }}
                   >
                     Show
                     <Plus className="rotate-90" />
