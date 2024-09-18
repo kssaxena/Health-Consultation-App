@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
+//print function to ensure every step is executed
 app.use((req, res, next) => {
   console.log(`Received ${req.method} request with body:`, req.body);
   next();

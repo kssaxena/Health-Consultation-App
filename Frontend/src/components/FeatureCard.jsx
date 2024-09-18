@@ -26,6 +26,7 @@ const FeatureCards = () => {
         We provide best Consultation for your Health
       </h1>
       <section className="feature_section flex flex-col lg:flex-row">
+        {/* all features of health tap in form of single cards */}
         <FeatureCard
           photo={
             <img

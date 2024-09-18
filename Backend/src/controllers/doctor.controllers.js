@@ -257,6 +257,7 @@ const GetAllDoctor = asyncHandler(async (req, res) => {
 // Handler for getting detailed doctor information
 const getDoctorDetails = asyncHandler(async (req, res) => {
   const { specialization, consultationMode } = req.params;
+  // console.log( req)
   // const { consultationMode } = req.params;
 
   const doctors = await DoctorUser.find({ specialization ,consultationMode }); // Fetch all doctors

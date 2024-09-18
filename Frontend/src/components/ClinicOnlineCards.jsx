@@ -29,11 +29,15 @@ const ClinicOnlineCards = () => {
       <h1 className="text-3xl drop-shadow-2xl shadow-black ">
         Book appointment for Online Consultation
       </h1>
+      {/* all doctors are listed in some particular fields according to there respective DoctorType  */}
       <Carousel responsive={responsive} className="p-5 z-10">
         <CardForOnline path={"/doctors_online"} DoctorType={"Physician "} />
         <CardForOnline path={"/doctors_online"} DoctorType={"Dentist"} />
         <CardForOnline path={"/doctors_online"} DoctorType={"Gynecologist"} />
-        <CardForOnline path={"/doctors_online"} DoctorType={"Physiotherapist"} />
+        <CardForOnline
+          path={"/doctors_online"}
+          DoctorType={"Physiotherapist"}
+        />
         <CardForOnline path={"/doctors_online"} DoctorType={"Orthopedist"} />
         <CardForOnline path={"/doctors_online"} DoctorType={"Surgeon"} />
         <CardForOnline path={"/doctors_online"} DoctorType={"Dietitian"} />

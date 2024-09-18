@@ -74,7 +74,6 @@ const userRegister = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, checkUser, "You are Registered."));
 });
 
-
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -93,6 +92,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
   }
 };
 
+//user login function
 const userLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -138,6 +138,7 @@ const userLogin = asyncHandler(async (req, res) => {
     );
 });
 
+//user logout function
 const userLogout = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(req.user._id, {
     new: true,

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const DoctorCardOnlyOnline = () => {
-  const [doctorData, setDoctorData] = useState();
+  const UserDetails = useSelector((store) => store.user.userDetails);
+  console.log(UserDetails);
+  // const [doctorData, setDoctorData] = useState();
   const [isVisible, SetIsVisible] = useState("");
 
   // async function FetchDoctor() {
@@ -20,32 +23,37 @@ const DoctorCardOnlyOnline = () => {
   //   console.log(Response);
   // }
 
+  const outerArray = UserDetails[0]; // Access the outer array
 
-  return (
+  return outerArray?.length === 0 ? (
+    <div>
+      <h1 className="text-3xl ">No data found</h1>
+    </div>
+  ) : (
     <section className="bg-[#248DAC] h-64 w-3/4 flex flex-col justify-between items-center m-5 drop-shadow-md hover:drop-shadow-xl duration-200 ease-in-out shadow-black border rounded-lg p-1">
       <div className="bg-[#E5F8FF] h-full w-full flex justify-between items-center drop-shadow-md hover:drop-shadow-xl duration-200 ease-in-out shadow-black border rounded-lg">
-        <div className="w-[30%] flex justify-center p-2 items-center h-full">
+        {/* <div className="w-[30%] flex justify-center p-2 items-center h-full">
           <img
-            src={doctorData?.doctorphoto}
+            src={UserDetails?.doctorphoto}
             alt="doctor_image"
             className="object-fill rounded-full drop-shadow-xl"
           />
-        </div>
+        </div> */}
         <div className="w-[50%] h-full flex flex-col justify-around">
           <h1 className="text-4xl font-medium font-sans">
-            {doctorData?.clinic}
+            {UserDetails[0][0]?.clinic_name}
           </h1>
-          <h1 className="text-2xl">{doctorData?.firstName}</h1>
+          <h1 className="text-2xl">{UserDetails[0][0]?.firstName}</h1>
           <h1 className="text-base tracking-wider font-bold">
-            {doctorData?.specialization}
+            {UserDetails[0][0]?.specialization}
           </h1>
           <h1 className="text-base font-semibold">
-            Experience of {doctorData?.experience} Years
+            Experience of {UserDetails[0][0]?.experience} Years
           </h1>
           <h1 className="text-base font-light">
-            Location: {doctorData?.location}
+            Location: {UserDetails[0][0]?.location}
           </h1>
-          <h1 className="text-base font-bold">Fee {doctorData?.fee}</h1>
+          <h1 className="text-base font-bold">Fee {UserDetails[0][0]?.fee}</h1>
         </div>
         <div className="w-[20%] h-full flex flex-col items-center justify-evenly p-10">
           {isVisible === "schedule" ? (

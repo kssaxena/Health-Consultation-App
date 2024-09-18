@@ -1,5 +1,5 @@
 import React from "react";
-import { doctorphoto, reactphoto } from "../assets";
+// import { doctorphoto, reactphoto } from "../assets";
 import Lottie from "lottie-web";
 import { useRef } from "react";
 import { useEffect } from "react";

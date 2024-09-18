@@ -17,6 +17,7 @@ function App() {
     <>
       <Header /> 
       <Routes>
+        {/* Home page */}
         <Route path="/" element={<Hero />} />
 
         {/* Register and login area */}

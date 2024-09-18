@@ -29,6 +29,7 @@ const InClinicOfflineCard = () => {
       <h1 className="text-3xl drop-shadow-2xl shadow-black ">
         Book appointment with top listed In-Clinic Doctors{" "}
       </h1>
+      {/* all doctors are listed in some particular fields according to there respective DoctorType  */}
       <Carousel responsive={responsive} className="p-5 z-10">
         <CardForOffline path={"/doctors_offline"} DoctorType={"Physician "} />
         <CardForOffline path={"/doctors_offline"} DoctorType={"Dentist"} />

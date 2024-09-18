@@ -30,6 +30,8 @@ const router = express.Router();
 
 router.route("/register").post(doctorRegister);
 router.route("/login").post(userDoctorLogin);
-router.route("/doctor-details/:specialization").get(getDoctorDetails); // Use the new controller
+router
+  .route("/doctor-details/:specialization/:consultationMode")
+  .get(getDoctorDetails); // Use the new controller
 
 export default router;

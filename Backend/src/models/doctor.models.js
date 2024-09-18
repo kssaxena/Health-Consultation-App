@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 
+//construction of schema of the doctor
 const doctorSchema = new mongoose.Schema(
   {
     email: {
@@ -62,16 +63,20 @@ const doctorSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
+//hashing password before saving it to the database
 doctorSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
+//method to compare password entered by user with the hashed password in the database
 doctorSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
+//method to generate access token for the doctor
 doctorSchema.methods.generateAccessToken = function () {
   return Jwt.sign(
     {
@@ -85,6 +90,8 @@ doctorSchema.methods.generateAccessToken = function () {
   );
 };
 
+
+//method to generate refresh token for the doctor
 doctorSchema.methods.generateRefreshToken = function () {
   return Jwt.sign(
     {
