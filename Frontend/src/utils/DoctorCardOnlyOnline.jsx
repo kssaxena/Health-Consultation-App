@@ -23,9 +23,9 @@ const DoctorCardOnlyOnline = () => {
   //   console.log(Response);
   // }
 
-  const outerArray = UserDetails[0]; // Access the outer array
+  // const outerArray = UserDetails[0]; // Access the outer array
 
-  return outerArray?.length === 0 ? (
+  return UserDetails?.length === 0 ? null : UserDetails[0].length === 0 ? (
     <div>
       <h1 className="text-3xl ">No data found</h1>
     </div>

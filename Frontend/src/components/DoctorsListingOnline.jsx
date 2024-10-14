@@ -77,11 +77,11 @@ const DoctorsListingOnline = () => {
       const response = await axios.get(url);
       // Axios automatically parses the response, so no need to call .json()
       // console.log(response.data.data[0]);
-
+      // console.log(response);
       const doctorData = response.data.data; // doctorData is an array of all doctors details
-      Dispatch(removeUser())
+      Dispatch(removeUser());
       Dispatch(addUser(doctorData));
-      console.log(doctorData); 
+      console.log(doctorData);
     } catch (error) {
       console.error("Error fetching products:", error);
       return [];

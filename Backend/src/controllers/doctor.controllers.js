@@ -260,8 +260,9 @@ const getDoctorDetails = asyncHandler(async (req, res) => {
   // console.log( req)
   // const { consultationMode } = req.params;
 
-  const doctors = await DoctorUser.find({ specialization ,consultationMode }); // Fetch all doctors
+  const doctors = await DoctorUser.find({ specialization  }); // Fetch all doctors
   // const doctorDetails = doctors.map((doctor) => collectDoctorData(doctor));
+  console.log(doctors);
   res.status(200).json(new ApiResponse(200, doctors, "Doctor Details"));
 });
 
