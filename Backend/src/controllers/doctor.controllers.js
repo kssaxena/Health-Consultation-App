@@ -257,13 +257,23 @@ const GetAllDoctor = asyncHandler(async (req, res) => {
 // Handler for getting detailed doctor information
 const getDoctorDetails = asyncHandler(async (req, res) => {
   const { specialization, consultationMode } = req.params;
-  // console.log( req)
+  console.log(req.params);
   // const { consultationMode } = req.params;
 
-  const doctors = await DoctorUser.find({ specialization }); // Fetch all doctors
+  const doctors = await DoctorUser.find({
+    specialization: specialization,
+    consultationMode: consultationMode,
+  });
+  console.log(specialization, consultationMode);
+
+  // const doctors = await DoctorUser.find({ specialization }); // Fetch all doctors
+  // const AllDoctor = await DoctorUser.find({ consultationMode });
+  // const doctors = await DoctorUser.find({ consultationMode }); // Fetch all doctors
   // const doctorDetails = doctors.map((doctor) => collectDoctorData(doctor));
   console.log(doctors);
-  res.status(200).json(new ApiResponse(200, doctors, "Doctor Details"));
+  // res.status(200).json(new ApiResponse(200, doctors, "Doctor Details"));
+  // console.log(AllDoctor);
+  res.status(200).json(new ApiResponse(200, doctors, "All Doctor"));
 });
 
 // Utility function to collect doctor data

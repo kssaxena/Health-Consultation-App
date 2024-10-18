@@ -22,7 +22,12 @@ const DoctorsListingOnline = () => {
 
       component: <GeneralPhysicianOnline />,
     },
-    { id: "1", specialization: "Dentist", component: <DentistOnline /> },
+    {
+      id: "1",
+      specialization: "Dentist",
+      consultationMode: "Online",
+      component: <DentistOnline />,
+    },
     {
       id: "2",
       specialization: "Gynecologist",
@@ -71,7 +76,7 @@ const DoctorsListingOnline = () => {
 
   async function FetchDoctor(specialization, consultationMode) {
     const url = `http://localhost:8000/api/v1/doctor/doctor-details/${specialization}/${consultationMode}`;
-    console.log(specialization);
+    // console.log(specialization);
 
     try {
       const response = await axios.get(url);
@@ -120,6 +125,7 @@ const DoctorsListingOnline = () => {
                     className="flex w-32 justify-between items-center border p-2 rounded-lg bg-[#E5F8FF] border-blue-500 hover:drop-shadow-md drop-shadow-sm shadow-black hover:scale-105 duration-200 ease-in-out hover:bg-[#22C55E]"
                     onClick={() => {
                       SetIsVisible(type.specialization);
+                      console.log(type.consultationMode);
                       FetchDoctor(type.specialization, type.consultationMode);
                     }}
                   >

@@ -30,7 +30,7 @@ const DoctorCardOnlyOnline = () => {
       <h1 className="text-3xl ">No data found</h1>
     </div>
   ) : (
-    UserDetails[0].map((user) => {
+    UserDetails[0].map((user, index) => {
       return (
         <section className="bg-[#248DAC] h-64 w-3/4 flex flex-col justify-between items-center m-5 drop-shadow-md hover:drop-shadow-xl duration-200 ease-in-out shadow-black border rounded-lg p-1">
           <div className="bg-[#E5F8FF] h-full w-full flex justify-between items-center drop-shadow-md hover:drop-shadow-xl duration-200 ease-in-out shadow-black border rounded-lg">
@@ -58,16 +58,16 @@ const DoctorCardOnlyOnline = () => {
               <h1 className="text-base font-bold">Fee: {user?.fee}</h1>
             </div>
             <div className="w-[20%] h-full flex flex-col items-center justify-evenly p-10">
-              {isVisible === "schedule" ? (
+              {isVisible === index ? (
                 <button
-                  onClick={() => SetIsVisible("")}
+                  onClick={() => SetIsVisible(null)}
                   className="h-10 w-fit p-4 py-6 flex justify-center items-center button rounded-full bg-[#248DAC] font-bold text-white tracking-widest uppercase transform hover:scale-105 transition-colors duration-300 drop-shadow-lg"
                 >
                   Cancel
                 </button>
               ) : (
                 <button
-                  onClick={() => SetIsVisible("schedule")}
+                  onClick={() => SetIsVisible(index)}
                   className="h-10 w-fit p-4 py-6 flex justify-center items-center button rounded-full bg-[#248DAC] font-bold text-white tracking-widest uppercase transform hover:scale-105 transition-colors duration-300 drop-shadow-lg"
                 >
                   Schedule
@@ -76,7 +76,7 @@ const DoctorCardOnlyOnline = () => {
             </div>
           </div>
           <div className="w-full p-2">
-            {isVisible === "schedule" && (
+            {isVisible === index && (
               <form className="flex justify-evenly items-center w-full">
                 <input
                   type="date"

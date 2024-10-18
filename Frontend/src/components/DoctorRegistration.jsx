@@ -290,7 +290,7 @@ const DoctorRegistration = () => {
             <option value={"Online"} name="Online">
               Online (Only)
             </option>
-            <option value={"Online&Offline"} name="Online&Offline">
+            <option value={"Offline"} name="Offline">
               Online and Offline (Both)
             </option>
           </select>
