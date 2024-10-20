@@ -93,11 +93,7 @@ const DoctorsListingOnline = () => {
     }
   }
 
-  //  useEffect(async () => {
-  //    // Fetch data from the backend
-
-  //    await FetchDoctor();
-  //  }, []);
+  
 
   return (
     <div className="pt-20 bg-[#E5F8FF] ">

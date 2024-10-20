@@ -12,8 +12,8 @@ export const NavigationElementsFooter2 = [
   { id: "2", title: "Developer", url: "#" },
   { id: "3", title: "Privacy Policy", url: "#" },
   { id: "4", title: "Terms & Conditions", url: "#" },
-  { id: "5", title: "Doctor Profile", url: "/doctorProfile" },
-  { id: "6", title: "Patient Profile", url: "/patientProfile" },
+  // { id: "5", title: "Doctor Profile", url: "/doctorProfile" },
+  // { id: "6", title: "Patient Profile", url: "/patientProfile" },
   //   { id: "4", title: "Contact", url: "#" },
 ];
 

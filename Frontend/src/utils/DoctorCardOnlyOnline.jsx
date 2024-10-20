@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import emailjs, { send } from "@emailjs/browser";
 
 const DoctorCardOnlyOnline = () => {
   const UserDetails = useSelector((store) => store.user.userDetails);
@@ -8,22 +9,42 @@ const DoctorCardOnlyOnline = () => {
   // const [doctorData, setDoctorData] = useState();
   const [isVisible, SetIsVisible] = useState("");
 
-  // async function FetchDoctor() {
-  //   console.log("function called");
-  //   const Response = await axios
-  //     .get("http://localhost:8000/api/v1/doctors/doctor-details")
-  //     .then((response) => {
-  //       console.log(response);
-  //       setDoctorData(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("There was an error fetching the doctor data!", error);
-  //     });
+  const formRef = useRef(null);
 
-  //   console.log(Response);
-  // }
+  const handleSubmitSchedule = (index) => {
+    console.log(index);
+    const formData = new FormData(formRef.current);
 
-  // const outerArray = UserDetails[0]; // Access the outer array
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+    formData.append("clinic_name", UserDetails[0][index]?.clinic_name);
+    formData.append("location", UserDetails[0][index]?.location);
+    formData.append("firstName", UserDetails[0][index]?.firstName);
+
+    const formObject = Object.fromEntries(formData);
+    console.log(formObject);
+    emailjs
+      .send(
+        process.env.SERVICE_ID,
+        process.env.TEMPLATE_ID,
+        {
+          from_name: formObject.email,
+          Clinic_Name: formObject.clinic_name,
+          Doctor_Name: formObject.firstName,
+          Date: formObject.date,
+          Time: formObject.time,
+          Location: formObject.location,
+        },
+        process.env.PUBLIC_KEY
+      )
+      .then(() => {
+        alert("email sent");
+      })
+      .catch((err) => {
+        console.log("ERROR");
+      });
+  };
 
   return UserDetails?.length === 0 ? null : UserDetails[0].length === 0 ? (
     <div>
@@ -77,16 +98,34 @@ const DoctorCardOnlyOnline = () => {
           </div>
           <div className="w-full p-2">
             {isVisible === index && (
-              <form className="flex justify-evenly items-center w-full">
+              <form
+                ref={formRef}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmitSchedule(index);
+                }}
+                className="flex justify-evenly items-center w-full"
+              >
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email Address"
+                  className="h-10 w-1/4 rounded-lg p-5 drop-shadow-lg"
+                />
                 <input
                   type="date"
+                  name="date"
                   className="h-10 w-1/4 rounded-lg p-5 drop-shadow-lg"
                 />
                 <input
                   type="time"
+                  name="time"
                   className="h-10 w-1/4 rounded-lg p-5 drop-shadow-lg"
                 />
-                <button className="border p-2 px-5 rounded-lg bg-[#E5F8FF] border-[#22C55E] hover:drop-shadow-md drop-shadow-sm shadow-black hover:scale-105 duration-200 ease-in-out hover:bg-[#22C55E] uppercase">
+                <button
+                  type="submit"
+                  className="border p-2 px-5 rounded-lg bg-[#E5F8FF] border-[#22C55E] hover:drop-shadow-md drop-shadow-sm shadow-black hover:scale-105 duration-200 ease-in-out hover:bg-[#22C55E] uppercase"
+                >
                   Confirm
                 </button>
               </form>
